@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>FINT Events</title>
+    <style type="text/css">
+table {
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid black;
+    font-family: Arial Narrow, Arial, sans-serif;
+}
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+td {
+    overflow-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: top;
+    white-space: nowrap;
+}
+td:hover {
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-all;
+}
+    </style>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th width="5%">ID</th>
+        <th width="5%">Time</th>
+        <th width="5%">Source</th>
+        <th width="10%">Client</th>
+        <th width="15%">Action</th>
+        <th width="10%">Query</th>
+        <th width="5%">Operation</th>
+        <th width="10%">Status</th>
+        <th width="5%">Response</th>
+        <th>Message</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="event: ${events}">
+        <td><a th:href="@{/events/id/{id}(id=${event.corrId})}" th:text="${event.corrId}">corrId</a></td>
+        <td th:text="${#dates.format(new java.util.Date(event.timestamp), 'HH:mm:ss')}">11:22:33</td>
+        <td th:text="${event.source}">Source</td>
+        <div th:object="${event.event}">
+            <td th:text="*{client}">Client</td>
+            <td th:text="*{action}">Action</td>
+            <td th:text="*{query}">Query</td>
+            <td th:text="*{operation}">Operation</td>
+            <td th:text="*{status}">STATUS</td>
+            <td th:text="*{responseStatus}">Response</td>
+            <td><span th:text="*{message}">Message</span>
+                <i th:unless="${#lists.isEmpty(#object.problems)}"
+                   th:text="'(' + ${#lists.size(#object.problems)} + ' problems)'">(12 problems)</i>
+            </td>
+        </div>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

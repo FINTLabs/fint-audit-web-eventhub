@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>FINT Event</title>
+<style type="text/css">
+    textarea {
+        width: 99%;
+        height: 5rem;
+        border: none;
+    }
+</style>
+</head>
+<body>
+<div th:each="event : ${events}">
+    <div th:text="${#dates.format(new java.util.Date(event.timestamp), 'HH:mm:ss.SSS')}">11:22:33.444</div>
+    <textarea th:text="${mapper.writeValueAsString(event.event)}">event</textarea>
+</div>
+</body>
+</html>

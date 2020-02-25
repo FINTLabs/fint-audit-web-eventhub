@@ -1,0 +1,81 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.21.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id 'com.github.ben-manes.versions' version '0.20.0'
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'no.fint'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    jcenter()
+    maven {
+        url "http://dl.bintray.com/fint/maven"
+    }
+}
+
+
+dependencies {
+    compile('no.fint:fint-audit-api:1.2.1')
+    compile('no.fint:fint-spring-secrets:0.1.0')
+
+    compile('com.azure:azure-messaging-eventhubs:5.0.2')
+    compile('org.projectlombok:lombok:1.18.4')
+
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile 'io.projectreactor:reactor-core:3.3.2.RELEASE'
+    compile 'org.apache.commons:commons-lang3:3.9'
+    compile 'com.google.guava:guava:28.2-jre'
+}
+
+task copyExternalDependencies(type: Copy) {
+    from configurations.runtime
+    into "$buildDir/deps/external"
+    exclude '**/fint-*.jar'
+}
+
+task copyFintDependencies(type: Copy) {
+    from configurations.runtime
+    into "$buildDir/deps/fint"
+    include '**/fint-*.jar'
+}
+
+build.dependsOn(copyExternalDependencies)
+build.dependsOn(copyFintDependencies)
+
+jar {
+    manifest {
+        attributes(
+                "Manifest-Version": "1.0",
+                "Main-Class": "no.fint.audit.web.Application",
+                "Specification-Version": "${version}",
+                "Implementation-Version": "${version}",
+                "Class-Path": configurations.runtime.collect { it.getName() }.join(' ')
+        )
+    }
+}
+
+bootRepackage.enabled = false
+
+bootRun {
+    systemProperties System.properties
+}

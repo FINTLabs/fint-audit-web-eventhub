@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  labels:
+    io.kompose.service: audit-web-eventhub
+  name: audit-web-eventhub
+spec:
+  ports:
+    - name: "8080"
+      port: 8080
+  type: LoadBalancer
+  selector:
+    io.kompose.service: audit-web-eventhub
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: audit-web-eventhub
+  name: audit-web-eventhub
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  revisionHistoryLimit: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      io.kompose.service: audit-web-eventhub
+  template:
+    metadata:
+      labels:
+        io.kompose.service: audit-web-eventhub
+    spec:
+      containers:
+        - name: audit-web-eventhub-alpha
+          image: fintlabs.azurecr.io/audit-web-eventhub:1.1.0-rc-1
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            httpGet:
+              port: 8080
+              path: /health
+          resources:
+            limits:
+              memory: "1.5Gi"
+              cpu: "500m"
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+          envFrom:
+            - configMapRef:
+                name: fint-environment
+            - secretRef:
+                name: fint-audit-web-eventhub
+          env:
+            - name: server.context-path
+              value: ""
