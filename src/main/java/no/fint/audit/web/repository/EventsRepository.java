@@ -11,8 +11,9 @@ import org.springframework.stereotype.Repository;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutionException;
@@ -27,9 +28,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 public class EventsRepository {
 
-    private final ConcurrentNavigableMap<Long, AuditEvent> auditEvents = new ConcurrentSkipListMap<>();
+    private final ConcurrentNavigableMap<Long, Collection<AuditEvent>> auditEvents = new ConcurrentSkipListMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
-    private final Cache<String, List<AuditEvent>> eventCache =
+    private final Cache<String, Collection<AuditEvent>> eventCache =
             CacheBuilder.newBuilder().expireAfterWrite(Duration.ofHours(8)).build();
 
     public List<AuditEvent> findEvents(long sinceTimestamp, Predicate<AuditEvent> predicate, long limit) {
@@ -37,12 +38,13 @@ public class EventsRepository {
                 .tailMap(sinceTimestamp)
                 .values()
                 .parallelStream()
+                .flatMap(Collection::parallelStream)
                 .filter(predicate)
                 .limit(limit)
                 .collect(Collectors.toList());
     }
 
-    public List<AuditEvent> getEventsByCorrId(String corrId) {
+    public Collection<AuditEvent> getEventsByCorrId(String corrId) {
         return eventCache.getIfPresent(corrId);
     }
 
@@ -73,8 +75,8 @@ public class EventsRepository {
             log.info("Context: {}", eventContext);
             AuditEvent event = mapper.readValue(eventContext.getEventData().getBody(), AuditEvent.class);
             log.info("Event: {}", event);
-            auditEvents.put(event.getTimestamp(), event);
-            eventCache.get(event.getCorrId(), ArrayList::new).add(event);
+            auditEvents.computeIfAbsent(event.getTimestamp(), k -> new ConcurrentLinkedQueue<>()).add(event);
+            eventCache.get(event.getCorrId(), ConcurrentLinkedQueue::new).add(event);
             log.info("Size: {}", auditEvents.size());
         } catch (IOException | ExecutionException e) {
             log.error("Error processing {}", eventContext, e);

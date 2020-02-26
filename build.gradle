@@ -42,9 +42,9 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     testCompile('org.springframework.boot:spring-boot-starter-test')
-    compile 'io.projectreactor:reactor-core:3.3.2.RELEASE'
-    compile 'org.apache.commons:commons-lang3:3.9'
-    compile 'com.google.guava:guava:28.2-jre'
+    compile('io.projectreactor:reactor-core:3.3.2.RELEASE')
+    compile('org.apache.commons:commons-lang3:3.9')
+    compile('com.google.guava:guava:28.2-jre')
 }
 
 task copyExternalDependencies(type: Copy) {

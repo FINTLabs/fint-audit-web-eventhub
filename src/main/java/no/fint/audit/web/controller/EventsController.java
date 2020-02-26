@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Predicate;
 
 @CrossOrigin
@@ -47,7 +47,7 @@ public class EventsController {
             Model model,
             @PathVariable String id
     ) {
-        List<AuditEvent> eventsByCorrId = eventsRepository.getEventsByCorrId(id);
+        Collection<AuditEvent> eventsByCorrId = eventsRepository.getEventsByCorrId(id);
         if (eventsByCorrId == null) {
             throw new EventsNotFoundException();
         }
