@@ -23,7 +23,7 @@ public class ApiController {
     @GetMapping({"{orgid:.+}", "{orgid}/{source:.+}", "{orgid}/{source}/{action:.+}", "{orgid}/{source}/{action}/{status:.+}"})
     public List<AuditEvent> getEventsJson(
             @PathVariable String orgid,
-            @PathVariable String source,
+            @PathVariable(required = false) String source,
             @PathVariable(required = false) String action,
             @PathVariable(required = false) String status,
             @RequestParam(required = false, defaultValue = "20m") String period,
