@@ -11,7 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @Controller
@@ -52,7 +54,10 @@ public class EventsController {
             throw new EventsNotFoundException();
         }
         model.addAttribute("mapper", objectMapper);
-        model.addAttribute("events", eventsByCorrId);
+        model.addAttribute("events",
+                eventsByCorrId.stream()
+                        .sorted(Comparator.comparingLong(AuditEvent::getTimestamp))
+                        .collect(Collectors.toList()));
         return "event";
     }
 
