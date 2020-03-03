@@ -70,16 +70,22 @@ public class EventsRepository {
     }
 
     public void add(EventContext eventContext) {
-        log.info("Add event");
         try {
-            log.info("Context: {}", eventContext);
             AuditEvent event = mapper.readValue(eventContext.getEventData().getBody(), AuditEvent.class);
-            log.info("Event: {}", event);
+            log.debug("Event: {}", event);
             auditEvents.computeIfAbsent(event.getTimestamp(), k -> new ConcurrentLinkedQueue<>()).add(event);
             eventCache.get(event.getCorrId(), ConcurrentLinkedQueue::new).add(event);
-            log.info("Size: {}", auditEvents.size());
+            log.debug("Size: {}", auditEvents.size());
         } catch (IOException | ExecutionException e) {
             log.error("Error processing {}", eventContext, e);
         }
+    }
+
+    public void delete(long timestamp) {
+        auditEvents.headMap(timestamp).clear();
+    }
+
+    public int size() {
+        return auditEvents.size();
     }
 }

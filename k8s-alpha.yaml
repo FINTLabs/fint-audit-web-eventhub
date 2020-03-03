@@ -39,19 +39,19 @@ spec:
     spec:
       containers:
         - name: audit-web-eventhub-alpha
-          image: fintlabs.azurecr.io/audit-web-eventhub:1.1.0-rc-1
+          image: fintlabs.azurecr.io/audit-web-eventhub:build.5
           ports:
             - containerPort: 8080
           readinessProbe:
-            initialDelaySeconds: 30
+            initialDelaySeconds: 5
             timeoutSeconds: 5
             httpGet:
               port: 8080
               path: /health
           resources:
             limits:
-              memory: "1.5Gi"
-              cpu: "500m"
+              memory: "2Gi"
+              cpu: "2"
             requests:
               cpu: "100m"
               memory: "256Mi"
