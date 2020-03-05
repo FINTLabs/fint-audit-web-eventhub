@@ -7,6 +7,8 @@ import com.azure.messaging.eventhubs.models.ErrorContext;
 import com.azure.messaging.eventhubs.models.EventContext;
 import no.fint.audit.web.repository.EventsRepository;
 import no.fint.audit.web.repository.InMemoryCheckpointStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +40,7 @@ public class Config {
 
     @Bean
     public Consumer<ErrorContext> errorContextConsumer() {
-        return errorContext -> {};
+        Logger logger = LoggerFactory.getLogger("eventhub");
+        return errorContext -> logger.warn("Error receiving events", errorContext.getThrowable());
     }
 }
