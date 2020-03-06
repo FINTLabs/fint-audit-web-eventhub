@@ -40,6 +40,8 @@ public class EventsController {
 
         long timestamp = eventsRepository.getTimestamp(period);
         Predicate<AuditEvent> predicate = eventsRepository.getQuery(orgid, source, action, status);
+        model.addAttribute("orgid", orgid);
+        model.addAttribute("source", source);
         model.addAttribute("events", eventsRepository.findEvents(timestamp, predicate, limit));
         return "events";
     }

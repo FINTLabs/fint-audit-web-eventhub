@@ -2,14 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>FINT Events</title>
+    <title th:inline="text">FINT Events - [[${orgid}]] - [[${#strings.defaultString(source,"")}]]</title>
     <style type="text/css">
 table {
     border-collapse: collapse;
 }
 table, th, td {
     border: 1px solid black;
-    font-family: Arial Narrow, Arial, sans-serif;
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-size: 90%;
 }
 table {
     width: 100%;
