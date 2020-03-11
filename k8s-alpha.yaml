@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
         - name: audit-web-eventhub-alpha
-          image: fintlabs.azurecr.io/audit-web-eventhub:build.5
+          image: fintlabs.azurecr.io/audit-web-eventhub:build.8
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -61,5 +61,6 @@ spec:
             - secretRef:
                 name: fint-audit-web-eventhub
           env:
-            - name: server.context-path
-              value: ""
+            - {name: AZURE_LOG_LEVEL, value: warning}
+            - {name: logging.level.no.fint.audit.web.repository.InMemoryCheckpointStore, value: warn}
+            - {name: logging.level.com.azure.messaging.eventhubs.PartitionBasedLoadBalancer, value: warn}
