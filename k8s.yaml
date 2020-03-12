@@ -38,8 +38,8 @@ spec:
         io.kompose.service: audit-web-eventhub
     spec:
       containers:
-        - name: audit-web-eventhub-alpha
-          image: fintlabs.azurecr.io/audit-web-eventhub:build.8
+        - name: audit-web-eventhub
+          image: fintlabs.azurecr.io/audit-web-eventhub:build.9
           ports:
             - containerPort: 8080
           readinessProbe:
