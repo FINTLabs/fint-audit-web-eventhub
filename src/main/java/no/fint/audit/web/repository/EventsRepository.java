@@ -21,8 +21,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.*;
 
 @Repository
 @Slf4j
@@ -56,7 +55,7 @@ public class EventsRepository {
     public Predicate<AuditEvent> getQuery(String orgid, String source, String action, String status) {
         Predicate<AuditEvent> predicate = event -> equalsIgnoreCase(event.getOrgId(), orgid);
         if (isNotBlank(source)) {
-            predicate = predicate.and(event -> equalsIgnoreCase(event.getSource(), source));
+            predicate = predicate.and(event -> containsIgnoreCase(event.getSource(), source));
         }
         if (isNotBlank(action)) {
             Pattern pattern = Pattern.compile(action);
