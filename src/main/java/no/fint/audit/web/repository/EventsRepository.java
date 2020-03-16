@@ -85,6 +85,6 @@ public class EventsRepository {
     }
 
     public int size() {
-        return auditEvents.size();
+        return auditEvents.values().parallelStream().mapToInt(Collection::size).sum();
     }
 }

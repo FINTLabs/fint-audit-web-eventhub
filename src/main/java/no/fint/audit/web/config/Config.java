@@ -1,5 +1,6 @@
 package no.fint.audit.web.config;
 
+import com.azure.messaging.eventhubs.CheckpointStore;
 import com.azure.messaging.eventhubs.EventHubClientBuilder;
 import com.azure.messaging.eventhubs.EventProcessorClient;
 import com.azure.messaging.eventhubs.EventProcessorClientBuilder;
@@ -22,6 +23,7 @@ public class Config {
     public EventProcessorClient eventProcessorClient(
             @Value("${fint.audit.azure.eventhub.connection-string}") String connectionString,
             @Value("${fint.audit.azure.eventhub.name}") String eventHubName,
+            CheckpointStore checkpointStore,
             Consumer<EventContext> eventProcessor,
             Consumer<ErrorContext> errorProcessor) {
         return new EventProcessorClientBuilder()
@@ -29,8 +31,13 @@ public class Config {
                 .processEvent(eventProcessor)
                 .processError(errorProcessor)
                 .consumerGroup(EventHubClientBuilder.DEFAULT_CONSUMER_GROUP_NAME)
-                .checkpointStore(new InMemoryCheckpointStore())
+                .checkpointStore(checkpointStore)
                 .buildEventProcessorClient();
+    }
+
+    @Bean
+    public CheckpointStore checkpointStore() {
+        return new InMemoryCheckpointStore();
     }
 
     @Bean
