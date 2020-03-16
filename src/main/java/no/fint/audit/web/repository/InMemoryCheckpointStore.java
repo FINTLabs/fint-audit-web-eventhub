@@ -4,17 +4,16 @@
 // From https://raw.githubusercontent.com/Azure/azure-sdk-for-java/master/sdk/eventhubs/azure-messaging-eventhubs/src/samples/java/com/azure/messaging/eventhubs/InMemoryCheckpointStore.java
 package no.fint.audit.web.repository;
 
-import com.azure.messaging.eventhubs.CheckpointStore;
-
 import com.azure.core.util.CoreUtils;
 import com.azure.core.util.logging.ClientLogger;
+import com.azure.messaging.eventhubs.CheckpointStore;
 import com.azure.messaging.eventhubs.models.Checkpoint;
 import com.azure.messaging.eventhubs.models.PartitionOwnership;
-import java.util.List;
-import java.util.Locale;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;

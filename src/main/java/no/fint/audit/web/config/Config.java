@@ -5,8 +5,8 @@ import com.azure.messaging.eventhubs.EventProcessorClient;
 import com.azure.messaging.eventhubs.EventProcessorClientBuilder;
 import com.azure.messaging.eventhubs.models.ErrorContext;
 import com.azure.messaging.eventhubs.models.EventContext;
-import no.fint.audit.web.repository.EventsRepository;
 import no.fint.audit.web.repository.InMemoryCheckpointStore;
+import no.fint.audit.web.worker.EventsWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +34,8 @@ public class Config {
     }
 
     @Bean
-    public Consumer<EventContext> eventContextConsumer(EventsRepository repository) {
-        return repository::add;
+    public Consumer<EventContext> eventContextConsumer(EventsWorker worker) {
+        return worker::add;
     }
 
     @Bean
