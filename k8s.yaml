@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
         - name: audit-web-eventhub
-          image: fintlabs.azurecr.io/audit-web-eventhub:build.12
+          image: fintlabs.azurecr.io/audit-web-eventhub:build.13
           ports:
             - containerPort: 8080
           readinessProbe:

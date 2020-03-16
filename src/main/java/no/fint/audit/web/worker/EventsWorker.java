@@ -33,16 +33,15 @@ public class EventsWorker {
 
     public void start() {
         executor.execute(this::work);
-        log.info("Workers: {}", threadCount.get());
     }
 
     public void work() {
         try {
             threadCount.incrementAndGet();
-            EventContext eventContext = queue.poll(2500, TimeUnit.MILLISECONDS);
+            EventContext eventContext = queue.poll();
             while (eventContext != null) {
                 eventsRepository.add(eventContext);
-                eventContext = queue.poll();
+                eventContext = queue.poll(2500, TimeUnit.MILLISECONDS);
             }
         } catch (Exception e) {
             log.warn(e.getMessage());
