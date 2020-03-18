@@ -42,7 +42,10 @@ public class EventsController {
         Predicate<AuditEvent> predicate = eventsRepository.getQuery(orgid, source, action, status);
         model.addAttribute("orgid", orgid);
         model.addAttribute("source", source);
-        model.addAttribute("events", eventsRepository.findEvents(timestamp, predicate, limit));
+        model.addAttribute("events",
+                eventsRepository
+                        .findEvents(timestamp, predicate, limit)
+                        .collect(Collectors.toList()));
         return "events";
     }
 

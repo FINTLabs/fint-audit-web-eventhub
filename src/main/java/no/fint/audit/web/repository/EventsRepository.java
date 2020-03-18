@@ -12,14 +12,13 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
@@ -32,15 +31,14 @@ public class EventsRepository {
     private final Cache<String, Collection<AuditEvent>> eventCache =
             CacheBuilder.newBuilder().expireAfterWrite(Duration.ofHours(8)).build();
 
-    public List<AuditEvent> findEvents(long sinceTimestamp, Predicate<AuditEvent> predicate, long limit) {
+    public Stream<AuditEvent> findEvents(long sinceTimestamp, Predicate<AuditEvent> predicate, long limit) {
         return auditEvents
                 .tailMap(sinceTimestamp)
                 .values()
                 .parallelStream()
                 .flatMap(Collection::parallelStream)
                 .filter(predicate)
-                .limit(limit)
-                .collect(Collectors.toList());
+                .limit(limit);
     }
 
     public Collection<AuditEvent> getEventsByCorrId(String corrId) {
@@ -49,6 +47,10 @@ public class EventsRepository {
 
     public long getTimestamp(String period) {
         Duration duration = Duration.parse("PT" + period.toUpperCase());
+        return getTimestamp(duration);
+    }
+
+    public long getTimestamp(Duration duration) {
         return ZonedDateTime.now().minus(duration).toInstant().toEpochMilli();
     }
 
@@ -87,4 +89,5 @@ public class EventsRepository {
     public int size() {
         return auditEvents.values().parallelStream().mapToInt(Collection::size).sum();
     }
+
 }
