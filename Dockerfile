@@ -1,5 +1,4 @@
 FROM gradle:6.2.2-jdk8 as builder
-USER root
 COPY . .
 RUN gradle --no-daemon build
 
