@@ -48,6 +48,7 @@ build.dependsOn(copyExternalDependencies)
 build.dependsOn(copyFintDependencies)
 
 jar {
+    enabled(true)
     manifest {
         attributes(
                 "Manifest-Version": "1.0",
