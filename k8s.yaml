@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - name: audit-web-eventhub
-          image: fintlabs.azurecr.io/audit-web-eventhub:PR-3.3
+          image: fintlabs.azurecr.io/audit-web-eventhub:PR-3.7
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -58,7 +58,7 @@ spec:
             - secretRef:
                 name: fint-audit-web-eventhub
           env:
-            - {name: JAVA_TOOL_OPTIONS, value: '-XX:+ExitOnOutOfMemoryError -Xmx10G -verbose:gc'}
+            - {name: JAVA_TOOL_OPTIONS, value: '-XX:+ExitOnOutOfMemoryError -XX:+UseG1GC -Xmx10G -verbose:gc'}
             - {name: AZURE_LOG_LEVEL, value: info}
             - {name: logging.level.no.fint.audit.web.repository.InMemoryCheckpointStore, value: warn}
             - {name: logging.level.com.azure.messaging.eventhubs.PartitionBasedLoadBalancer, value: warn}
