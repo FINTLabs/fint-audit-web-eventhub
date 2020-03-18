@@ -1,6 +1,6 @@
 FROM gradle:6.2.2-jdk8 as builder
 COPY . .
-RUN gradle --no-daemon build
+RUN gradle build
 
 FROM gcr.io/distroless/java:8
 ENV JAVA_TOOL_OPTIONS -XX:+ExitOnOutOfMemoryError
