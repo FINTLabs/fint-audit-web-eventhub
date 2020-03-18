@@ -25,10 +25,7 @@ spec:
   minReadySeconds: 30
   revisionHistoryLimit: 0
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
+    type: Recreate
   selector:
     matchLabels:
       io.kompose.service: audit-web-eventhub
@@ -39,7 +36,7 @@ spec:
     spec:
       containers:
         - name: audit-web-eventhub
-          image: fintlabs.azurecr.io/audit-web-eventhub:build.16
+          image: fintlabs.azurecr.io/audit-web-eventhub:PR-3.3
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -47,7 +44,7 @@ spec:
             timeoutSeconds: 5
             httpGet:
               port: 8080
-              path: /health
+              path: /actuator/health
           resources:
             limits:
               memory: "12Gi"

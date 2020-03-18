@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.fint.audit.model.AuditEvent;
 import no.fint.audit.web.repository.EventsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.time.Duration;
 import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import java.util.zip.GZIPOutputStream;
 
 @CrossOrigin
 @RestController
@@ -40,10 +42,12 @@ public class ApiController {
             @RequestParam(required = false, defaultValue = "1000") long limit,
             HttpServletResponse response
     ) throws IOException {
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
         long timestamp = eventsRepository.getTimestamp(period);
         Predicate<AuditEvent> predicate = eventsRepository.getQuery(orgid, source, action, status);
         Stream<AuditEvent> events = eventsRepository.findEvents(timestamp, predicate, limit);
-        final Writer writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream()));
+        final Writer writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(response.getOutputStream())));
         objectMapper.writerFor(Iterator.class).writeValue(writer, events.iterator());
     }
 }
