@@ -73,10 +73,8 @@ public class EventsRepository {
     public void add(EventContext eventContext) {
         try {
             AuditEvent event = mapper.readValue(eventContext.getEventData().getBody(), AuditEvent.class);
-            log.debug("Event: {}", event);
             auditEvents.computeIfAbsent(event.getTimestamp(), k -> new ConcurrentLinkedQueue<>()).add(event);
             eventCache.get(event.getCorrId(), ConcurrentLinkedQueue::new).add(event);
-            log.debug("Size: {}", auditEvents.size());
         } catch (IOException | ExecutionException e) {
             log.error("Error processing {}", eventContext, e);
         }
