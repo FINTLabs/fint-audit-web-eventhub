@@ -26,17 +26,16 @@ import static org.apache.commons.lang3.StringUtils.*;
 @Slf4j
 public class EventsRepository {
 
-    private final ConcurrentNavigableMap<Long, Collection<AuditEvent>> auditEvents = new ConcurrentSkipListMap<>();
+    private final ConcurrentNavigableMap<Long, AuditEvent> auditEvents = new ConcurrentSkipListMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
     private final Cache<String, Collection<AuditEvent>> eventCache =
             CacheBuilder.newBuilder().expireAfterWrite(Duration.ofHours(8)).build();
 
     public Stream<AuditEvent> findEvents(long sinceTimestamp, Predicate<AuditEvent> predicate, long limit) {
         return auditEvents
-                .tailMap(sinceTimestamp)
+                .tailMap(sinceTimestamp << 8)
                 .values()
                 .parallelStream()
-                .flatMap(Collection::parallelStream)
                 .filter(predicate)
                 .limit(limit);
     }
@@ -73,7 +72,10 @@ public class EventsRepository {
     public void add(EventContext eventContext) {
         try {
             AuditEvent event = mapper.readValue(eventContext.getEventData().getBody(), AuditEvent.class);
-            auditEvents.computeIfAbsent(event.getTimestamp(), k -> new ConcurrentLinkedQueue<>()).add(event);
+            long index = event.getTimestamp() << 8;
+            while (auditEvents.putIfAbsent(index, event) != null) {
+                ++index;
+            }
             eventCache.get(event.getCorrId(), ConcurrentLinkedQueue::new).add(event);
         } catch (IOException | ExecutionException e) {
             log.error("Error processing {}", eventContext, e);
@@ -81,11 +83,11 @@ public class EventsRepository {
     }
 
     public void delete(long timestamp) {
-        auditEvents.headMap(timestamp).clear();
+        auditEvents.headMap(timestamp << 8).clear();
     }
 
     public int size() {
-        return auditEvents.values().parallelStream().mapToInt(Collection::size).sum();
+        return auditEvents.size();
     }
 
 }
