@@ -15,8 +15,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.time.Duration;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
@@ -49,5 +52,16 @@ public class ApiController {
         Stream<AuditEvent> events = eventsRepository.findEvents(timestamp, predicate, limit);
         final Writer writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(response.getOutputStream())));
         objectMapper.writerFor(Iterator.class).writeValue(writer, events.iterator());
+    }
+
+    @GetMapping("id/{id}")
+    public List<AuditEvent> getEventById(
+            @PathVariable String id
+    ) {
+        return eventsRepository
+                .getEventsByCorrId(id)
+                .stream()
+                .sorted(Comparator.comparingLong(AuditEvent::getTimestamp))
+                .collect(Collectors.toList());
     }
 }
