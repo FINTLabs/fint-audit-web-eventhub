@@ -77,6 +77,7 @@ public class EventsRepository {
                 ++index;
             }
             eventCache.get(event.getCorrId(), ConcurrentLinkedQueue::new).add(event);
+            eventContext.updateCheckpoint();
         } catch (IOException | ExecutionException e) {
             log.error("Error processing {}", eventContext, e);
         }
