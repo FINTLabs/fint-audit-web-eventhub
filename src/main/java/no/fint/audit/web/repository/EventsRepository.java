@@ -6,6 +6,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.audit.model.AuditEvent;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -28,8 +29,13 @@ public class EventsRepository {
 
     private final ConcurrentNavigableMap<Long, AuditEvent> auditEvents = new ConcurrentSkipListMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
-    private final Cache<String, Collection<AuditEvent>> eventCache =
-            CacheBuilder.newBuilder().expireAfterWrite(Duration.ofHours(8)).build();
+    private final Cache<String, Collection<AuditEvent>> eventCache;
+
+    public EventsRepository(
+            @Value("${fint.audit.azure.eventhub.cache.duration:PT2H}") Duration duration
+    ) {
+        eventCache = CacheBuilder.newBuilder().expireAfterWrite(duration).build();
+    }
 
     public Stream<AuditEvent> findEvents(long sinceTimestamp, Predicate<AuditEvent> predicate, long limit) {
         return auditEvents
