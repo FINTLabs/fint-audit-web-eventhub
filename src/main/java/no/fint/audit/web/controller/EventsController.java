@@ -44,7 +44,7 @@ public class EventsController {
         model.addAttribute("source", source);
         model.addAttribute("events",
                 eventsRepository
-                        .findEvents(timestamp, predicate, limit)
+                        .findEvents(timestamp, orgid, predicate, limit)
                         .collect(Collectors.toList()));
         return "events";
     }

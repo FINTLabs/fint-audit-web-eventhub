@@ -49,7 +49,7 @@ public class ApiController {
         response.setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
         long timestamp = eventsRepository.getTimestamp(period);
         Predicate<AuditEvent> predicate = eventsRepository.getQuery(orgid, source, action, status);
-        Stream<AuditEvent> events = eventsRepository.findEvents(timestamp, predicate, limit);
+        Stream<AuditEvent> events = eventsRepository.findEvents(timestamp, orgid, predicate, limit);
         final Writer writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(response.getOutputStream())));
         objectMapper.writerFor(Iterator.class).writeValue(writer, events.iterator());
     }
