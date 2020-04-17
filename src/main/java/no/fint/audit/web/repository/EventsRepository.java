@@ -56,10 +56,8 @@ public class EventsRepository {
     }
 
     private Predicate<AuditEntry> hasOrgId(String orgId) {
-        return entry -> {
-            final int hashCode = lowerCase(orgId).hashCode();
-            return entry.getOrgId() == hashCode;
-        };
+        final int hashCode = lowerCase(orgId).hashCode();
+        return entry -> entry.getOrgId() == hashCode;
     }
 
     public Collection<AuditEvent> getEventsByCorrId(String corrId) {
