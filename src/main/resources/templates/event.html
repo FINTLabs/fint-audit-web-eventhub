@@ -19,7 +19,7 @@
 </head>
 <body>
 <div th:each="event : ${events}">
-    <div th:text="${#dates.format(new java.util.Date(event.timestamp), 'HH:mm:ss.SSS')}">11:22:33.444</div>
+    <div th:text="${#dates.formatISO(new java.util.Date(event.timestamp))}">0000-00-00T11:22:33.444+00:00</div>
     <textarea th:text="${mapper.writeValueAsString(event.event)}">event</textarea>
 </div>
 </body>
