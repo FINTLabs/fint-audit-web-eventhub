@@ -35,6 +35,6 @@ public class Wrapper {
         } catch (IOException e) {
             return null;
         }
-        return new AuditEntry(out.toByteArray(), event.getTimestamp(), StringUtils.lowerCase(event.getOrgId()).hashCode());
+        return new AuditEntry(out.toByteArray(), StringUtils.lowerCase(event.getOrgId()).hashCode());
     }
 }
