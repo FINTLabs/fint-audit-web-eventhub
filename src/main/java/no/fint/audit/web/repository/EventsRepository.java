@@ -17,10 +17,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentNavigableMap;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,6 +33,7 @@ public class EventsRepository {
     private final ObjectMapper mapper = new ObjectMapper();
     private final Cache<Integer, Collection<AuditEntry>> entryCache;
     private final Wrapper wrapper;
+    private volatile long lastUpdated;
 
     public EventsRepository(
             @Value("${fint.audit.azure.eventhub.cache.duration:PT2H}") Duration duration,
@@ -113,6 +111,7 @@ public class EventsRepository {
             }
             entryCache.get(event.getCorrId().hashCode(), ConcurrentLinkedQueue::new).add(entry);
             eventContext.updateCheckpoint();
+            lastUpdated = System.nanoTime();
         } catch (IOException | ExecutionException e) {
             log.error("Error processing {}", eventContext, e);
         }
@@ -126,4 +125,7 @@ public class EventsRepository {
         return auditEntries.size();
     }
 
+    public boolean isHealthy() {
+        return (System.nanoTime() - lastUpdated) < TimeUnit.HOURS.toNanos(1);
+    }
 }
