@@ -49,12 +49,13 @@ public class EventsController {
         return "events";
     }
 
-    @GetMapping("id/{id}")
+    @GetMapping("id/{orgid}/{id}")
     public String getEventById(
             Model model,
+            @PathVariable String orgid,
             @PathVariable String id
     ) {
-        Collection<AuditEvent> eventsByCorrId = eventsRepository.getEventsByCorrId(id);
+        Collection<AuditEvent> eventsByCorrId = eventsRepository.getEventsByCorrId(id, orgid);
         if (eventsByCorrId == null) {
             throw new EventsNotFoundException();
         }
