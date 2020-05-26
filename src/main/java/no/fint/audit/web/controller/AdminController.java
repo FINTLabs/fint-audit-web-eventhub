@@ -53,4 +53,9 @@ public class AdminController {
     public int eventCount() {
         return eventsRepository.size();
     }
+
+    @GetMapping("/health")
+    public boolean health() {
+        return eventsRepository.isHealthy();
+    }
 }
