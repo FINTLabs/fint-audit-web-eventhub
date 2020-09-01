@@ -64,7 +64,7 @@ td:hover {
     </thead>
     <tbody>
     <tr th:each="event: ${events}">
-        <td><a th:href="@{/events/id/{orgid}/{id}(id=${event.corrId},orgid=${orgid})}" th:text="${event.corrId}">corrId</a></td>
+        <td><a th:href="@{/events/id/{id}(id=${event.corrId})}" th:text="${event.corrId}">corrId</a></td>
         <td th:text="${#dates.format(new java.util.Date(event.timestamp), 'HH:mm:ss')}">11:22:33</td>
         <td th:text="${event.source}">Source</td>
         <div th:object="${event.event}">

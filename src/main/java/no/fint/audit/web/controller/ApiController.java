@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.audit.model.AuditEvent;
 import no.fint.audit.web.repository.EventsRepository;
-import no.fint.event.model.HeaderConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +25,9 @@ import java.util.zip.GZIPOutputStream;
 
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/api/events/{env}", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/events/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class ApiController {
-
-    @Value("${fint.audit.environment}")
-    private String environment;
 
     @Autowired
     private EventsRepository eventsRepository;
@@ -40,10 +35,9 @@ public class ApiController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @GetMapping({"/{source:.+}", "/{source}/{action:.+}", "/{source}/{action}/{status:.+}"})
+    @GetMapping({"{orgid:.+}", "{orgid}/{source:.+}", "{orgid}/{source}/{action:.+}", "{orgid}/{source}/{action}/{status:.+}"})
     public void getEventsJson(
-            @RequestHeader(HeaderConstants.ORG_ID) String orgId,
-            @PathVariable String env,
+            @PathVariable String orgid,
             @PathVariable(required = false) String source,
             @PathVariable(required = false) String action,
             @PathVariable(required = false) String status,
@@ -51,25 +45,21 @@ public class ApiController {
             @RequestParam(required = false, defaultValue = "1000") long limit,
             HttpServletResponse response
     ) throws IOException {
-        if (!environment.equals(env)) throw new IllegalArgumentException(env);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
         long timestamp = eventsRepository.getTimestamp(period);
-        Predicate<AuditEvent> predicate = eventsRepository.getQuery(orgId, source, action, status);
-        Stream<AuditEvent> events = eventsRepository.findEvents(timestamp, orgId, predicate, limit);
+        Predicate<AuditEvent> predicate = eventsRepository.getQuery(orgid, source, action, status);
+        Stream<AuditEvent> events = eventsRepository.findEvents(timestamp, orgid, predicate, limit);
         final Writer writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(response.getOutputStream())));
         objectMapper.writerFor(Iterator.class).writeValue(writer, events.iterator());
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping("id/{id}")
     public List<AuditEvent> getEventById(
-            @RequestHeader(HeaderConstants.ORG_ID) String orgId,
-            @PathVariable String env,
             @PathVariable String id
     ) {
-        if (!environment.equals(env)) throw new IllegalArgumentException(env);
         return eventsRepository
-                .getEventsByCorrId(id, orgId)
+                .getEventsByCorrId(id)
                 .stream()
                 .sorted(Comparator.comparingLong(AuditEvent::getTimestamp))
                 .collect(Collectors.toList());

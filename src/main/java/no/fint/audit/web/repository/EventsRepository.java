@@ -58,14 +58,13 @@ public class EventsRepository {
         return entry -> entry.getOrgId() == hashCode;
     }
 
-    public Collection<AuditEvent> getEventsByCorrId(String corrId, String orgId) {
+    public Collection<AuditEvent> getEventsByCorrId(String corrId) {
         Collection<AuditEntry> entries = entryCache.getIfPresent(corrId.hashCode());
         if (entries == null) {
             return null;
         }
         return entries
                 .stream()
-                .filter(hasOrgId(orgId))
                 .map(wrapper::unwrap)
                 .filter(hasCorrId(corrId))
                 .collect(Collectors.toList());
