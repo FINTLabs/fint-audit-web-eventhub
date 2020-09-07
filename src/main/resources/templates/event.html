@@ -4,13 +4,8 @@
 <meta charset="UTF-8"/>
 <title>FINT Event</title>
 <style type="text/css">
-    textarea {
-        width: 99%;
-        height: 5rem;
-        border: none;
-    }
     @media (prefers-color-scheme: dark) {
-        body, textarea {
+        body {
             background-color: #222222;
             color: #cccccc;
         }
@@ -20,7 +15,26 @@
 <body>
 <div th:each="event : ${events}">
     <div th:text="${#dates.formatISO(new java.util.Date(event.timestamp))}">0000-00-00T11:22:33.444+00:00</div>
-    <textarea th:text="${mapper.writeValueAsString(event.event)}">event</textarea>
+    <pre th:text="${mapper.writeValueAsString(event.event)}">
+{
+    "corrId": "bec76b55-8364-4fe5-8073-4033ee5093ce",
+    "action": "GET_ALL_MVAKODE",
+    "operation": null,
+    "status": "DELIVERED_TO_ADAPTER",
+    "time": 1599465593477,
+    "orgId": "viken.no",
+    "source": "betaling",
+    "client": "CACHE_SERVICE",
+    "data": [
+        "Data field cleared by audit service."
+    ],
+    "problems": null,
+    "statusCode": null,
+    "message": null,
+    "responseStatus": null,
+    "query": null
+}
+    </pre>
 </div>
 </body>
 </html>

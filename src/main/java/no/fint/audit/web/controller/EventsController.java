@@ -1,6 +1,7 @@
 package no.fint.audit.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.audit.model.AuditEvent;
 import no.fint.audit.web.repository.EventsRepository;
@@ -58,7 +59,7 @@ public class EventsController {
         if (eventsByCorrId == null) {
             throw new EventsNotFoundException();
         }
-        model.addAttribute("mapper", objectMapper);
+        model.addAttribute("mapper", objectMapper.enable(SerializationFeature.INDENT_OUTPUT));
         model.addAttribute("events",
                 eventsByCorrId.stream()
                         .sorted(Comparator.comparingLong(AuditEvent::getTimestamp))
