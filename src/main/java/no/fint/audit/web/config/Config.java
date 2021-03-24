@@ -4,9 +4,11 @@ import com.azure.messaging.eventhubs.CheckpointStore;
 import com.azure.messaging.eventhubs.EventHubClientBuilder;
 import com.azure.messaging.eventhubs.EventProcessorClient;
 import com.azure.messaging.eventhubs.EventProcessorClientBuilder;
+import com.azure.messaging.eventhubs.checkpointstore.blob.BlobCheckpointStore;
 import com.azure.messaging.eventhubs.models.ErrorContext;
 import com.azure.messaging.eventhubs.models.EventContext;
-import no.fint.audit.web.repository.InMemoryCheckpointStore;
+import com.azure.storage.blob.BlobContainerAsyncClient;
+import com.azure.storage.blob.BlobContainerClientBuilder;
 import no.fint.audit.web.worker.EventsWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,20 @@ public class Config {
     }
 
     @Bean
-    public CheckpointStore checkpointStore() {
-        return new InMemoryCheckpointStore();
+    public CheckpointStore checkpointStore(BlobContainerAsyncClient blobContainerAsyncClient) {
+        return new BlobCheckpointStore(blobContainerAsyncClient);
+    }
+
+    @Bean
+    public BlobContainerAsyncClient blobContainerAsyncClient(
+            @Value("${fint.audit.azure.blob.connection-string}") String connectionString,
+            @Value("${fint.audit.azure.blob.container-name}") String containerName,
+            @Value("${fint.audit.azure.blob.sas-token}") String sasToken) {
+        return new BlobContainerClientBuilder()
+                .connectionString(connectionString)
+                .containerName(containerName)
+                .sasToken(sasToken)
+                .buildAsyncClient();
     }
 
     @Bean
