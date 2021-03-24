@@ -45,12 +45,10 @@ public class Config {
     @Bean
     public BlobContainerAsyncClient blobContainerAsyncClient(
             @Value("${fint.audit.azure.blob.connection-string}") String connectionString,
-            @Value("${fint.audit.azure.blob.container-name}") String containerName,
-            @Value("${fint.audit.azure.blob.sas-token}") String sasToken) {
+            @Value("${fint.audit.azure.blob.container-name}") String containerName) {
         return new BlobContainerClientBuilder()
                 .connectionString(connectionString)
                 .containerName(containerName)
-                .sasToken(sasToken)
                 .buildAsyncClient();
     }
 
