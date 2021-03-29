@@ -22,6 +22,7 @@ dependencies {
     implementation('no.fint:fint-spring-secrets:0.1.0')
 
     implementation('com.azure:azure-messaging-eventhubs:5.5.0')
+    implementation('com.azure:azure-messaging-eventhubs-checkpointstore-blob:1.5.1')
 
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
