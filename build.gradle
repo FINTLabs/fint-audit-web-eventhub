@@ -13,13 +13,12 @@ repositories {
     mavenLocal()
     jcenter()
     maven {
-        url "http://dl.bintray.com/fint/maven"
+        url 'https://repo.fintlabs.no/releases'
     }
 }
 
 dependencies {
-    implementation('no.fint:fint-audit-api:1.2.1')
-    implementation('no.fint:fint-spring-secrets:0.1.0')
+    implementation('no.fint:fint-audit-api:+')
 
     implementation('com.azure:azure-messaging-eventhubs:5.5.0')
     implementation('com.azure:azure-messaging-eventhubs-checkpointstore-blob:1.5.1')
