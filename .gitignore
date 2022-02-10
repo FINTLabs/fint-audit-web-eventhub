@@ -33,3 +33,4 @@
 /.project
 /.settings/
 src/main/resources/application-test.properties
+.DS_Store
