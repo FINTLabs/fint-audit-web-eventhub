@@ -4,7 +4,7 @@ metadata:
   name: fint-audit-web-eventhub
   labels:
 spec:
-  itemPath: "vaults/aks-api-vault/items/fint-audit-web-eventhub"
+  itemPath: "vaults/aks-beta-vault/items/fint-audit-web-eventhub"
 ---
 apiVersion: v1
 kind: Service
