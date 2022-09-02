@@ -45,7 +45,7 @@ jobs:
         uses: azure/k8s-deploy@v1
         with:
           manifests: |
-            k8s.yaml
+            k8s/manifest/beta/k8s.yaml
           images: |
             ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
           namespace: ${{ env.NAMESPACE }}
@@ -61,7 +61,7 @@ jobs:
       #   uses: azure/k8s-deploy@v1
       #   with:
       #     manifests: |
-      #       k8s.yaml
+      #       k8s/manifest/api/k8s.yaml
       #     images: |
       #       ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
       #     namespace: ${{ env.NAMESPACE }}
