@@ -59,7 +59,7 @@ spec:
               cpu: "6"
             requests:
               cpu: "2"
-              memory: "12Gi"
+              memory: "30Gi"
           envFrom:
             - configMapRef:
                 name: fint-environment
