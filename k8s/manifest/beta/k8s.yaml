@@ -55,18 +55,18 @@ spec:
               path: /actuator/health
           resources:
             limits:
-              memory: "23Gi"
-              cpu: "6"
+              memory: "25Gi"
+              cpu: "323m"
             requests:
-              cpu: "2"
-              memory: "12Gi"
+              cpu: "323m"
+              memory: "25Gi"
           envFrom:
             - configMapRef:
                 name: fint-environment
             - secretRef:
                 name: fint-audit-web-eventhub
           env:
-            - {name: JAVA_TOOL_OPTIONS, value: '-XX:+ExitOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xmx20G -verbose:gc'}
+            - {name: JAVA_TOOL_OPTIONS, value: '-XX:+ExitOnOutOfMemoryError -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xmx23897M -verbose:gc'}
             - {name: AZURE_LOG_LEVEL, value: info}
             - {name: logging.level.no.fint.audit.web.repository.InMemoryCheckpointStore, value: warn}
             - {name: logging.level.com.azure.messaging.eventhubs.PartitionBasedLoadBalancer, value: warn}
