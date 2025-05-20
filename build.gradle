@@ -11,14 +11,14 @@ sourceCompatibility = '11'
 
 repositories {
     mavenLocal()
-    jcenter()
     maven {
         url 'https://repo.fintlabs.no/releases'
     }
+    mavenCentral()
 }
 
 dependencies {
-    implementation('no.fint:fint-audit-api:+')
+    implementation('no.fintlabs:fint-audit-api:2.1.0-rc-2')
 
     implementation('com.azure:azure-messaging-eventhubs:5.5.0')
     implementation('com.azure:azure-messaging-eventhubs-checkpointstore-blob:1.5.1')
