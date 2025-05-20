@@ -48,7 +48,7 @@ public class EventsRepository {
                 .values()
                 .parallelStream()
                 .filter(hasOrgId(orgId))
-                .map(wrapper::unwrap)
+                .map(this::unwrapAndFilter)
                 .filter(predicate)
                 .limit(limit);
     }
@@ -65,7 +65,7 @@ public class EventsRepository {
         }
         return entries
                 .stream()
-                .map(wrapper::unwrap)
+                .map(this::unwrapAndFilter)
                 .filter(hasCorrId(corrId))
                 .collect(Collectors.toList());
     }
@@ -115,6 +115,14 @@ public class EventsRepository {
         } catch (IOException | ExecutionException e) {
             log.error("Error processing {}", eventContext, e);
         }
+    }
+
+    private AuditEvent unwrapAndFilter(AuditEntry entry) {
+        AuditEvent event = wrapper.unwrap(entry);
+        if (event != null) {
+            event.filterOdataQuery();
+        }
+        return event;
     }
 
     public void delete(long timestamp) {
