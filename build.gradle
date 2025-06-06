@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    implementation('no.fintlabs:fint-audit-api:2.1.0')
+    implementation('no.fintlabs:fint-audit-api:2.2.0')
 
     implementation('com.azure:azure-messaging-eventhubs:5.5.0')
     implementation('com.azure:azure-messaging-eventhubs-checkpointstore-blob:1.5.1')
